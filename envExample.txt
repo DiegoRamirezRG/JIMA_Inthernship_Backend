@@ -1,0 +1,6 @@
+PORT = Numero de puerto
+ADDR = Direccion IP
+HOST = 'Direccion IP del servidor de la base de datos'
+USER = 'Nombre del ususario'
+PASSWORD = 'Contraseña'
+DATABASE = 'Nombre de la base de datos'
