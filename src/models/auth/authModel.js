@@ -43,7 +43,7 @@ AuthModel.authorization = async (crendecials) => {
                 };
             }else{
 
-                await AuthHelper.authFailed();
+                await AuthHelper.authFailed(email);
                 connection.release();
                 return {
                     success: false,
