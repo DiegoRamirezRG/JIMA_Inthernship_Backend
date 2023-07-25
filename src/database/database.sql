@@ -14,7 +14,7 @@ CREATE TABLE persona(
     Numero_De_Emergencia BIGINT NULL,
     Numero_De_Telefono BIGINT NOT NULL,
     Nacionalidad VARCHAR(100),
-    Correo_Electronico TEXT NOT NULL,
+    Correo_Electronico TEXT NOT NULL UNIQUE,
     Rol ENUM('Estudiante', 'Profesor', 'Administrativo', 'Padre') NOT NULL,
     Active BOOLEAN DEFAULT true,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
@@ -24,7 +24,7 @@ CREATE TABLE persona(
 CREATE TABLE credenciales(
     ID_Credencial CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     FK_Persona CHAR(36) NOT NULL,
-    Correo TEXT NOT NULL,
+    Correo TEXT NOT NULL UNIQUE,
     Contraseña TEXT NOT NULL,
     Numero_De_Intentos INT NOT NULL DEFAULT 0,
     Ultimo_Intento DATETIME NULL,
