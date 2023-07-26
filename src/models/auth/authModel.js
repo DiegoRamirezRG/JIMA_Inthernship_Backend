@@ -60,5 +60,22 @@ AuthModel.authorization = async (crendecials) => {
     }
 }
 
+AuthModel.validateToken = async (token) => {
+    try {
+        
+        const decode = await AuthHelper.validate(token);
+
+        return {
+            success: true,
+            data: decode
+        }
+
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message
+        }
+    }
+}
 
 module.exports = AuthModel;

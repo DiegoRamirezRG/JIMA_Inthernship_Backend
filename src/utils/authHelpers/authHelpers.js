@@ -43,4 +43,16 @@ AuthHelper.makeJWT = async(email, id) => {
     return token;
 }
 
+AuthHelper.validate = async (token) => {
+    return new Promise(async (resolve, reject) => {
+        jwt.verify(token, process.env.SECRETJWTKEY, (err, decoded) => {
+            if(err){
+                reject(new Error('El token no es valido'));
+            }else{
+                resolve(decoded);
+            }
+        })
+    })
+}
+
 module.exports = AuthHelper;
