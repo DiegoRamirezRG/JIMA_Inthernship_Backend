@@ -13,10 +13,11 @@ CREATE TABLE persona(
     Tipo_De_Sagre ENUM('A', 'B', 'AB', 'O', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
     Numero_De_Emergencia BIGINT NULL,
     Numero_De_Telefono BIGINT NOT NULL,
-    Nacionalidad VARCHAR(100),
+    Nacionalidad VARCHAR(100) NULL,
     Correo_Electronico TEXT NOT NULL UNIQUE,
     Rol ENUM('Estudiante', 'Profesor', 'Administrativo', 'Padre') NOT NULL,
     Active BOOLEAN DEFAULT true,
+    Imagen TEXT NULL DEFAULT(null),
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL
 );
@@ -50,7 +51,7 @@ CREATE TABLE direccion(
     FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona)
 );
 
-CREATE TABLE alergias(
+CREATE TABLE enfermedades(
     ID_Alergia CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
     Descripcion TEXT NOT NULL,

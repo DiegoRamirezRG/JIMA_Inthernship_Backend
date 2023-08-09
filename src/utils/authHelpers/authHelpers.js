@@ -40,6 +40,7 @@ AuthHelper.makeJWT = async(email, id) => {
     });
 
     await connection.query(`UPDATE credenciales SET Numero_De_Intentos = 0, Token_De_Sesion = "${token}", Inicio_De_Sesion = NOW() WHERE correo = "${email}"`);
+    connection.release();
     return token;
 }
 

@@ -63,11 +63,10 @@ AuthModel.authorization = async (crendecials) => {
 AuthModel.validateToken = async (token) => {
     try {
         
-        const decode = await AuthHelper.validate(token);
-
-        return {
+        const decodedToken = await AuthHelper.validate(token);
+        return{
             success: true,
-            data: decode
+            data: decodedToken
         }
 
     } catch (error) {
@@ -76,6 +75,25 @@ AuthModel.validateToken = async (token) => {
             message: error.message
         }
     }
+}
+
+AuthModel.getUserByJWT = async (token) => {
+    const connection = await db.getConnection();
+    const [authUser] = await connection.query(`SELECT p.*, c.contraseña FROM credenciales as c, persona as p WHERE c.FK_Persona = p.ID_Persona AND c.Token_De_Sesion = "${token}"`);
+    
+    if(authUser.length === 0){
+        connection.release();
+        return {
+            success: false
+        }
+    }else{
+        connection.release();
+        return {
+            success: true,
+            data: authUser[0]
+        }
+    }
+
 }
 
 module.exports = AuthModel;
