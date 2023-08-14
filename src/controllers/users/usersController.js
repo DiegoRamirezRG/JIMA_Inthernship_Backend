@@ -1,8 +1,48 @@
+const UsersModel = require('../../models/users/usersModel');
+const UsersHelpers = require('../../utils/usersHelpers/userHelpers');
 
 module.exports = {
 
     async getUsers(req, res, next){
-        return res.status(201).json({success: true, data: 'Si jala'})
+        try {
+            const {offset, order_by, nombre, rol, grado, grupo, turno} = req.body;
+
+            const where = UsersHelpers.organizeWhere(nombre, rol, grado, grupo, turno);
+            const users = await UsersModel.getUsers(where, offset, order_by);
+            return res.status(201).json({
+                success: true,
+                message: 'Datos obtenidos con exito',
+                data: users
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener los usuarios',
+                error: error
+            })
+        }
+    },
+
+    async getPagination(req, res, next){
+        try {
+            const {offset, order_by, nombre, rol, grado, grupo, turno} = req.body;
+
+            const where = UsersHelpers.organizeWhere(nombre, rol, grado, grupo, turno);
+            const pagination = await UsersModel.getPagination(where);
+            return res.status(201).json({
+                success: true,
+                message: 'Datos obtenidos con exito',
+                data: pagination
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener la paginacion',
+                error: error
+            })
+        }
     }
 
 }
