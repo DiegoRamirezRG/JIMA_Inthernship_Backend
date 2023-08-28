@@ -7,14 +7,14 @@ CREATE TABLE persona(
     Nombre VARCHAR(50) NOT NULL,
     Apellido_Paterno VARCHAR(50) NOT NULL,
     Apellido_Materno VARCHAR(50) NULL,
-    CURP VARCHAR(18) NULL,
+    CURP VARCHAR(18) NULL UNIQUE,
     Genero ENUM('Masculino', 'Femenino', 'Otro') NOT NULL,
     Fecha_De_Nacimiento DATE NOT NULL,
     Tipo_De_Sagre ENUM('A', 'B', 'AB', 'O', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
     Numero_De_Emergencia BIGINT NULL,
     Numero_De_Telefono BIGINT NOT NULL,
     Nacionalidad VARCHAR(100) NULL,
-    Correo_Electronico TEXT NOT NULL UNIQUE,
+    Correo_Electronico VARCHAR(255) NOT NULL UNIQUE,
     Rol ENUM('Estudiante', 'Profesor', 'Administrativo', 'Padre') NOT NULL,
     Active BOOLEAN DEFAULT true,
     Imagen TEXT NULL DEFAULT(null),
@@ -25,7 +25,7 @@ CREATE TABLE persona(
 CREATE TABLE credenciales(
     ID_Credencial CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     FK_Persona CHAR(36) NOT NULL,
-    Correo TEXT NOT NULL UNIQUE,
+    Correo VARCHAR(255) NOT NULL UNIQUE,
     Contraseña TEXT NOT NULL,
     Numero_De_Intentos INT NOT NULL DEFAULT 0,
     Ultimo_Intento DATETIME NULL,
@@ -34,7 +34,7 @@ CREATE TABLE credenciales(
     Token_De_Sesion TEXT NULL,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
-    FOREIGN KEY ( FK_Persona ) REFERENCES persona(ID_Persona)
+    FOREIGN KEY ( FK_Persona ) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE direccion(
@@ -46,19 +46,20 @@ CREATE TABLE direccion(
     Codigo_Postal TEXT NOT NULL,
     Numero_Interior TEXT NULL,
     Numero_Exterior TEXT NOT NULL,
+    Calle TEXT NOT NULL,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
-    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona)
+    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE enfermedades(
+CREATE TABLE alergias(
     ID_Alergia CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
-    Descripcion TEXT NOT NULL,
+    Descripcion TEXT NULL,
     FK_Persona CHAR(36) NOT NULL,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
-    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona)
+    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE estudiante(
@@ -69,7 +70,7 @@ CREATE TABLE estudiante(
     Titulado BOOLEAN NOT NULL DEFAULT false,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
-    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona)
+    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE administrativos(
@@ -81,7 +82,7 @@ CREATE TABLE administrativos(
     URL TEXT NULL,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
-    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona)
+    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE profesor(
@@ -93,5 +94,5 @@ CREATE TABLE profesor(
     URL TEXT NULL,
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
-    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona)
+    FOREIGN KEY (FK_Persona) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
 );

@@ -12,17 +12,17 @@ INSERT INTO persona (
     Correo_Electronico,
     Rol
 ) VALUES (
-    'Diego Guadalupe',
-    'Ramirez',
-    'Reyes',
-    'RARD011008HJCMYGA7',
+    'Admin',
+    'Sys',
+    '',
+    '',
     'Masculino',
-    '22022-10-01',
+    '2001-10-08',
     'O+',
     3487895811,
     3481098523,
     'Mexicano',
-    'dieghoramreyes@gmail.com',
+    'administrador@gmail.com',
     'Administrativo'
 );
 
@@ -31,11 +31,20 @@ INSERT INTO credenciales(
     Correo,
     Contraseña
 ) VALUES (
-    'b13ef322-2b00-11ee-b4a5-0800274fe67a',
-    'dieghoramreyes@gmail.com',
+    'f7dc455f-4375-11ee-96d4-0800274fe67a',
+    'administrador@gmail.com',
     '5914af360a493b7cd046d15bc04c0b9f'
 )
 
+INSERT INTO administrativos (
+    FK_Persona,
+    NSS,
+    Fecha_De_Contratacion
+) VALUES (
+    'f7dc455f-4375-11ee-96d4-0800274fe67a',
+    'NOT-NECESARY',
+    '2023-08-25'
+)
 
 
 insert into persona (Nombre, Apellido_Paterno, Apellido_Materno, CURP, Genero, Fecha_De_Nacimiento, Tipo_De_Sagre, Numero_De_Emergencia, Numero_De_Telefono, Nacionalidad, Correo_Electronico, Rol, Active, Imagen) values ('Willie', 'Keson', null, '84-189-2962', 'Masculino', '2022-10-01', 'O', '9495186843', '8318237120', 'Mexicano', 'wneylon0@gmpg.org', 'Padre', false, 'https://robohash.org/consequaturaliasitaque.png?size=50x50&set=set1');

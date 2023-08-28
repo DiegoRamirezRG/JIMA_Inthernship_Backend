@@ -43,6 +43,25 @@ module.exports = {
                 error: error
             })
         }
+    },
+
+    async createUser(req, res, next){
+        try {
+
+            const {user, address, alergies, type} = req.body;
+
+            const result = await UsersModel.createUser(user, address, alergies, type);
+
+            return res.status(201).json({
+                ...result
+            })
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al crear el usuario',
+                error: error
+            })
+        }
     }
 
 }
