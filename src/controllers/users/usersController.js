@@ -62,6 +62,27 @@ module.exports = {
                 error: error
             })
         }
+    },
+
+    async getUserByID(req, res, next){
+        try {
+            
+            const userId = req.params.idUser;
+            const user = await UsersModel.getUserById(userId);
+
+            return res.status(201).json({
+                success: false,
+                message: 'Usuario obtenido con exito',
+                data: user
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener el usuario',
+                error: error
+            })
+        }
     }
 
 }

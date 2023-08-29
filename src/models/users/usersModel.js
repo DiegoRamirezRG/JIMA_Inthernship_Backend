@@ -71,6 +71,8 @@ UsersModel.createUser = async (user, address, alergies, type) => {
                     await connection.query(insertTeacherQuery);
                     break;
                 case 'Estudiante':
+                    const insertStudentQuery = `INSERT INTO estudiante (FK_Persona${type.Matricula ? ', Matricula': ''}${type.URL ? ', ULR': ''}) VALUES ("${userInserted[0].ID_Persona}"${type.Matricula ? `, "${type.Matricula}"`: ''}${type.URL ? `, "${type.URL}"`: ''})`;
+                    await connection.query(insertStudentQuery);
                     break;
                 case 'Padre':
                     break;
@@ -88,7 +90,6 @@ UsersModel.createUser = async (user, address, alergies, type) => {
         } catch (error) {
             await connection.rollback();
             connection.release();
-            console.log(error.message);
             throw error;
         }
         
@@ -97,6 +98,24 @@ UsersModel.createUser = async (user, address, alergies, type) => {
         console.log(error.message);
         throw error;
     }
+}
+
+UsersModel.getUserById = async (id_user) => {
+    
+    const connection = await db.getConnection();
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT Nombre, Apellido_Paterno, Apellido_Materno, CURP, Genero, Fecha_De_Nacimiento, Tipo_De_Sagre, Numero_De_Emergencia, Numero_De_Telefono, Nacionalidad, Correo_Electronico, Rol, Active, Imagen FROM persona WHERE ID_Persona = "${id_user}"`);
+            connection.release();
+    
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.log(error.message);
+            reject(error);
+        }
+    })
 }
 
 module.exports = UsersModel;
