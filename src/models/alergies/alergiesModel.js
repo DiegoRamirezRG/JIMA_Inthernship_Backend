@@ -8,6 +8,7 @@ AlergiesModel.getAlergiesByUserId = async (userId) => {
         try {
             
             const [alergies] = await connection.query(`SELECT ID_Alergia, Nombre, Descripcion FROM alergias WHERE FK_Persona = "${userId}"`);
+            connection.release();
             resolve(alergies);
 
         } catch (error) {
