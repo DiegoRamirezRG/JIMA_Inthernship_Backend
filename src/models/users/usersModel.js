@@ -1,6 +1,7 @@
 
 const db = require('../../config/databaseConfig');
 const crypto = require('crypto');
+
 const UsersModel = {};
 
 UsersModel.getUsers = async (where, offset, order_by) => {
@@ -110,6 +111,50 @@ UsersModel.getUserById = async (id_user) => {
             connection.release();
     
             resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.log(error.message);
+            reject(error);
+        }
+    })
+}
+
+UsersModel.verifyUserId = async(id_user) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+            const [result] = await connection.query(`SELECT * FROM persona WHERE ID_Persona = "${id_user}"`);
+            connection.release();
+
+            if(result.length > 0){
+                resolve('Exist');
+            }else{
+                reject(new Error('El usuario no existe'));
+            }
+
+        } catch (error) {
+            connection.release();
+            console.log(error.message);
+            reject(error);
+        }
+    })
+}
+
+
+UsersModel.updateUserImage = async(id_uder, filename) => {
+    const connection = await db.getConnection();
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`UPDATE persona SET Imagen = "${filename}" WHERE ID_Persona = "${id_uder}"`);
+            connection.release();
+
+            if(result.affectedRows > 0){
+                resolve(true);
+            }else{
+                reject(new Error('Hubo un error actualizando la iamgen en la base de datos'));
+            }
         } catch (error) {
             connection.release();
             console.log(error.message);

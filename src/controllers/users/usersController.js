@@ -1,3 +1,6 @@
+const multer = require('multer');
+const { user_profile_bucket } = require('../../config/multerConfig');
+
 const UsersModel = require('../../models/users/usersModel');
 const UsersHelpers = require('../../utils/usersHelpers/userHelpers');
 
@@ -82,6 +85,42 @@ module.exports = {
                 message: 'Ha ocurrido un error al obtener el usuario',
                 error: error
             })
+        }
+    },
+
+    async uploadUserProfile(req, res, next){
+        try {
+
+            const id_user = req.params.user_id;
+            await UsersModel.verifyUserId(id_user);
+
+            const bucket = multer({storage: await user_profile_bucket(id_user)}).single('file');
+            await bucket(req, res, async (err) => {
+                if(err){
+                    console.error(`Error: ${err}`);
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error subiendo la imágene del perfil',
+                        error: err.message
+                    });
+                }
+
+                
+                const updated = await UsersModel.updateUserImage(id_user, req.file.filename);
+
+                return res.status(201).json({
+                    success: true,
+                    message: 'Imágene del perfil subida correctamente',
+                    data: req.file.filename
+                });
+            })
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Hubo un error subiendo la imágene del perfil',
+                error: error.message
+            });
         }
     }
 
