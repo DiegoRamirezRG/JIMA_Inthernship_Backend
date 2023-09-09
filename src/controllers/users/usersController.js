@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path');
 const { user_profile_bucket } = require('../../config/multerConfig');
 
 const UsersModel = require('../../models/users/usersModel');
@@ -92,7 +93,9 @@ module.exports = {
         try {
 
             const id_user = req.params.user_id;
-            await UsersModel.verifyUserId(id_user);
+            const deleteDir = path.join(__dirname, `../../global/storage/user_profiles/${id_user}`);
+            await UsersModel.verifyUserId(id_user); 
+            await UsersHelpers.deleteImage(deleteDir);
 
             const bucket = multer({storage: await user_profile_bucket(id_user)}).single('file');
             await bucket(req, res, async (err) => {
@@ -110,15 +113,63 @@ module.exports = {
 
                 return res.status(201).json({
                     success: true,
-                    message: 'Imágene del perfil subida correctamente',
+                    message: 'Imágen del perfil subida correctamente',
                     data: req.file.filename
                 });
             })
 
         } catch (error) {
+            console.log(error);
             return res.status(501).json({
                 success: false,
-                message: 'Hubo un error subiendo la imágene del perfil',
+                message: 'Hubo un error subiendo la imágen del perfil',
+                error: error.message
+            });
+        }
+    },
+
+    async deleteUserProfile(req, res, next){
+        try {
+            
+            const user_id = req.params.user_id;
+            await UsersModel.verifyUserId(user_id);
+            const isDeleted = await UsersModel.deleteUserImage(user_id);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Imágen del perfil eliminada correctamente',
+                data: isDeleted
+            });
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Hubo un error eliminando la imágen del perfil',
+                error: error.message
+            });
+        }
+    },
+
+    async updateUserData(req, res, next){
+        try {
+
+            const user_id = req.params.user_id;
+            await UsersModel.verifyUserId(user_id);
+            const user = req.body;
+            
+            await UsersModel.updateInformation(user, user_id);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Informacion del usuario actualizada',
+                data: 'Successful Update'
+            });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(501).json({
+                success: false,
+                message: 'Hubo un error actualizando la informacion del usuario',
                 error: error.message
             });
         }

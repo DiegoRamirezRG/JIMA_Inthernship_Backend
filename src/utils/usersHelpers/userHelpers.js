@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const UsersHelpers = {};
 
 UsersHelpers.organizeWhere = (nombre, rol, grado, grupo, turno) => {
@@ -36,6 +38,40 @@ UsersHelpers.organizeWhere = (nombre, rol, grado, grupo, turno) => {
     }
 
     return organizedWhere;
+}
+
+UsersHelpers.deleteImage = (dir) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+
+            if (!fs.existsSync(dir)) {
+                resolve();
+                return;
+            }
+
+            if(fs.readdirSync(dir).length === 0){
+                resolve();
+                return;
+            }
+
+            fs.readdirSync(dir).forEach((file) => {
+                const fileDir = path.join(dir, file);
+                if (fs.lstatSync(fileDir).isFile()) {
+                    fs.unlinkSync(fileDir);
+                }
+            });
+
+            const isEmpty = fs.readdirSync(dir).length === 0;
+
+            if (isEmpty) {
+                resolve();
+            } else {
+                reject(new Error('Ocurrio un error eliminando la imagen.'));
+            }
+        } catch (error) {
+            reject(error);
+        }
+    })
 }
 
 module.exports = UsersHelpers;

@@ -1,6 +1,10 @@
 
 const db = require('../../config/databaseConfig');
+const path = require('path');
 const crypto = require('crypto');
+const { format } = require('date-fns');
+
+const UsersHelpers = require('../../utils/usersHelpers/userHelpers');
 
 const UsersModel = {};
 
@@ -141,13 +145,27 @@ UsersModel.verifyUserId = async(id_user) => {
     })
 }
 
+UsersModel.existUserImage = async(id_user) => {
+    try {
+        const deleteDir = path.join(__dirname, `../../global/storage/user_profiles/${id_user}`);
+        await UsersHelpers.deleteImage(deleteDir);
+        resolve(true);
+    } catch (error) {
+        reject(error);
+    }
+}
+
 
 UsersModel.updateUserImage = async(id_uder, filename) => {
     const connection = await db.getConnection();
 
     return new Promise(async (resolve, reject) => {
         try {
-            const [result] = await connection.query(`UPDATE persona SET Imagen = "${filename}" WHERE ID_Persona = "${id_uder}"`);
+
+            const now = new Date();
+            const formattedDate = format(now, 'yyyy-MM-dd HH:mm:ss');
+
+            const [result] = await connection.query(`UPDATE persona SET Imagen = "${filename}", Actualizado_EN = "${formattedDate}" WHERE ID_Persona = "${id_uder}"`);
             connection.release();
 
             if(result.affectedRows > 0){
@@ -158,6 +176,80 @@ UsersModel.updateUserImage = async(id_uder, filename) => {
         } catch (error) {
             connection.release();
             console.log(error.message);
+            reject(error);
+        }
+    })
+}
+
+UsersModel.deleteUserImage = async (id_user) => {
+    const connection = await db.getConnection();
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const deleteDir = path.join(__dirname, `../../global/storage/user_profiles/${id_user}`);
+            await UsersHelpers.deleteImage(deleteDir);
+
+            const [result] = await connection.query(`UPDATE persona SET Imagen = null WHERE ID_Persona = "${id_user}"`);
+            connection.release();
+
+            if(result.affectedRows > 0){
+                resolve(true);
+            }else{
+                reject(new Error('Hubo un error eliminando la iamgen en la base de datos'));
+            }
+
+        } catch (error) {
+            connection.release();
+            reject(error);
+        }
+    })
+}
+
+UsersModel.updateInformation = async (user, user_id) => {
+    const connection = await db.getConnection();
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let updateString = "";
+
+            for (const key in user) {
+                if (user.hasOwnProperty(key)) {
+
+                    if(key === 'Fecha_De_Nacimiento'){
+                        const date = new Date(user[key]);
+                        const formattedDate = date.toISOString().slice(0, 19).replace("T", " ");
+
+                        updateString += `${key} = ${user[key] != '' && user[key] != null ? `"${ formattedDate }"` : null}`;
+                        if (key !== Object.keys(user)[Object.keys(user).length - 1]) {
+                            updateString += ", ";
+                        }
+                    }else if(key === 'Numero_De_Telefono'){
+                        updateString += `${key} = ${user[key] != '' && user[key] != null ? `${ user[key] }` : null}`;
+                        if (key !== Object.keys(user)[Object.keys(user).length - 1]) {
+                            updateString += ", ";
+                        }
+                    }else{
+                        updateString += `${key} = ${user[key] != '' && user[key] != null ? `"${ user[key] }"` : null}`;
+                        if (key !== Object.keys(user)[Object.keys(user).length - 1]) {
+                            updateString += ", ";
+                        }
+                    }
+                }
+            }
+
+            const now = new Date();
+            const formattedDate = format(now, 'yyyy-MM-dd HH:mm:ss');
+
+            const [result] = await connection.query(`UPDATE persona SET ${updateString}, Actualizado_EN = "${formattedDate}" WHERE ID_Persona = "${user_id}"`);
+            connection.release();
+
+            if(result.affectedRows > 0){
+                resolve();
+            }else{
+                reject(new Error('Hubo un error eliminando la iamgen en la base de datos'));
+            }
+        } catch (error) {
+            connection.release();
             reject(error);
         }
     })

@@ -5,4 +5,6 @@ module.exports = (app) => {
     
     app.get('/api/credentials/getCredentials/:userId', middleware, CredentialsController.getCredentialsByUserId);
 
+    app.put('/api/credentials/update/:userId', middleware, CredentialsController.updateCredentials);
+
 }
