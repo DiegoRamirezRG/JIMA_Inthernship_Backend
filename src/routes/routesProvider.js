@@ -5,6 +5,7 @@ const RolesRoutes = require('./roles/rolesRoute');
 const CredentialsRoutes = require('./credentials/credentialsRoute');
 const AlergiesRoutes = require('./alergies/alergiesRoute');
 const AddressRoutes = require('./address/adressRoute');
+const LocationRoutes = require('./location/locationRoute');
 
 module.exports = (app) => {
 
@@ -14,4 +15,5 @@ module.exports = (app) => {
     CredentialsRoutes(app);
     AlergiesRoutes(app);
     AddressRoutes(app);
+    LocationRoutes(app);
 }
