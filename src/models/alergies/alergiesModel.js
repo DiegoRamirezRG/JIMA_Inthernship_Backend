@@ -31,20 +31,23 @@ AlergiesModel.updateAlergies = async (userId, userData, alergiesData) => {
             const formattedDate = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
             const jsonArrayAux = [];
 
-            const [existAlergies] = await connection.query(`SELECT COUNT(*) FROM alergias WHERE FK_Persona = "${userId}"`)
+            const [existAlergies] = await connection.query(`SELECT COUNT(*) as alergies FROM alergias WHERE FK_Persona = "${userId}"`)
 
-            if(existAlergies[0].count > 0){
+            console.log(existAlergies[0].alergies);
+
+            if(existAlergies[0].alergies > 0){
                 const [deletePastAlergies] = await connection.query(`DELETE FROM alergias WHERE FK_Persona = "${userId}"`);
 
-                if(deletePastAlergies.affectedRows !== existAlergies[0].count){
+                if(deletePastAlergies.affectedRows !== existAlergies[0].alergies){
                     throw new Error('Ocurrio un error actualizando las alergias');
                 }
             }
 
-            if(alergiesData.length > 0){
-                for (let i = 0; alergiesData[i]; i++) {
-                    jsonArrayAux.push(alergiesData[i]);
-                }
+            for (let i = 0; alergiesData[i]; i++) {
+                jsonArrayAux.push(alergiesData[i]);
+            }
+
+            if(jsonArrayAux.length > 0){
     
                 for (let index = 0; index < jsonArrayAux.length; index++) {
                     insertionValues += `("${jsonArrayAux[index].Nombre}", "${jsonArrayAux[index].Descripcion}", "${userId}")`;
@@ -73,7 +76,7 @@ AlergiesModel.updateAlergies = async (userId, userData, alergiesData) => {
                 }
             }
 
-            if(alergiesData.length > 0){
+            if(jsonArrayAux.length > 0){
                 const [insertAlergies] = await connection.query(`INSERT INTO alergias(Nombre, Descripcion, FK_Persona) VALUES ${insertionValues}`);
                 const [updateUserData] = await connection.query(`UPDATE persona SET ${updateString}, Actualizado_EN = "${formattedDate}" WHERE ID_Persona = "${userId}"`);
 

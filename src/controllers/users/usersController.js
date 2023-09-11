@@ -1,5 +1,8 @@
 const multer = require('multer');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const { user_profile_bucket } = require('../../config/multerConfig');
 
 const UsersModel = require('../../models/users/usersModel');
@@ -9,10 +12,13 @@ module.exports = {
 
     async getUsers(req, res, next){
         try {
-            const {offset, order_by, nombre, rol, grado, grupo, turno} = req.body;
+            const {offset, order_by, nombre, rol, grado, grupo, turno, token} = req.body;
 
-            const where = UsersHelpers.organizeWhere(nombre, rol, grado, grupo, turno);
+            const {id} = jwt.verify(token, process.env.SECRETJWTKEY);
+
+            const where = UsersHelpers.organizeWhere(nombre, rol, grado, grupo, turno, id);
             const users = await UsersModel.getUsers(where, offset, order_by);
+            
             return res.status(201).json({
                 success: true,
                 message: 'Datos obtenidos con exito',

@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const UsersHelpers = {};
 
-UsersHelpers.organizeWhere = (nombre, rol, grado, grupo, turno) => {
+UsersHelpers.organizeWhere = (nombre, rol, grado, grupo, turno, id) => {
     let organizedWhere = '';
 
     if (nombre) {
@@ -37,6 +37,14 @@ UsersHelpers.organizeWhere = (nombre, rol, grado, grupo, turno) => {
         organizedWhere += turno;
     }
 
+    if(id){
+        if(organizedWhere){
+            organizedWhere += ' AND ';
+        }
+        organizedWhere += `ID_Persona <> "${id}" AND Nombre <> "Admin"`;
+    }
+
+    console.log(organizedWhere);
     return organizedWhere;
 }
 
