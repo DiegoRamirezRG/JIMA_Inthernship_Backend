@@ -6,6 +6,11 @@ const CredentialsRoutes = require('./credentials/credentialsRoute');
 const AlergiesRoutes = require('./alergies/alergiesRoute');
 const AddressRoutes = require('./address/adressRoute');
 const LocationRoutes = require('./location/locationRoute');
+const StadisticsRoutes = require('./stadistics/stadisticsRoute');
+const CareerRoutes = require('./careers/careersRoute');
+const SchoolInfoRoutes = require('./school_info/school_infoRoute');
+
+const StudentRoutes = require('./students/studentsRoute');
 
 module.exports = (app) => {
 
@@ -16,4 +21,8 @@ module.exports = (app) => {
     AlergiesRoutes(app);
     AddressRoutes(app);
     LocationRoutes(app);
+    StadisticsRoutes(app);
+    CareerRoutes(app);
+    StudentRoutes(app);
+    SchoolInfoRoutes(app);
 }
