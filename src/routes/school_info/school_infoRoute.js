@@ -9,6 +9,7 @@ module.exports = (app) => {
     
     app.get('/api/school/info/grades/getGrades', middleware, SchoolInfoController.getSchoolGrades);
     app.post('/api/school/info/grades/createGrade', middleware, SchoolInfoController.createSchoolGrade);
+    app.put('/api/school/info/grades/updateGrade', middleware, SchoolInfoController.updateSchoolGrade);
 
 
     app.get('/api/school/info/groups/getGroups', middleware, SchoolInfoController.getSchoolGroups);

@@ -90,7 +90,7 @@ SchoolInfoModel.getGrades = async () => {
     const connection = await db.getConnection();
     return new Promise(async (resolve, reject) => {
         try {            
-            const [result] = await connection.query('SELECT * FROM grados');
+            const [result] = await connection.query('SELECT * FROM grados ORDER BY Numero ASC');
             connection.release();
 
             resolve(result);
@@ -123,6 +123,30 @@ SchoolInfoModel.createGrade = async (name, desc) => {
             connection.release();
             console.error(error.message);
             reject(error)
+        }
+    })
+}
+
+SchoolInfoModel.updateGrade = async (Numero, desc, grade_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+            connection.beginTransaction();
+            const [result] = await connection.query(`UPDATE grados SET Numero = ${Numero}${desc != "" && desc != null ? `, Descripcion = "${desc}"` : ''}, Actualizado_EN = NOW() WHERE ID_Grado = "${grade_id}"`);
+
+            if(result.affectedRows > 0){
+                connection.commit();
+                connection.release();
+                resolve();
+            }else{
+                throw new Error('Error al actualizar el grado')
+            }
+        } catch (error) {
+            connection.rollback();
+            connection.release();
+            console.error(error.message);
+            reject(error);
         }
     })
 }

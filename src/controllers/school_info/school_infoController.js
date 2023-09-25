@@ -91,17 +91,39 @@ module.exports = {
     async createSchoolGrade(req, res, next){
         try {
 
-            const { Nombre, Descripcion } = req.body;
+            const { Numero, Descripcion } = req.body;
 
-            if(!Nombre || !Descripcion){
+            if(!Numero){
                 throw new Error('Datos faltantes');
             }
 
-            await SchoolInfoModel.createGrade(Nombre, Descripcion);
+            await SchoolInfoModel.createGrade(Numero, Descripcion);
 
             return res.status(201).json({
                 success: true,
                 message: 'Grado creado con exito',
+            });
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al crear el grado',
+                error: error.message
+            });
+        }
+    },
+
+    async updateSchoolGrade(req, res, next){
+        try {
+            const { Numero, Descripcion, ID_Grado } = req.body;
+
+            if(!Numero || !ID_Grado){
+                throw new Error('Datos faltantes');
+            }
+
+            await SchoolInfoModel.updateGrade(Numero, Descripcion, ID_Grado);
+            return res.status(201).json({
+                success: true,
+                message: 'Grado actualizado con exito',
             });
         } catch (error) {
             return res.status(501).json({
