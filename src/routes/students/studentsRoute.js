@@ -4,6 +4,7 @@ const StudentsController = require('../../controllers/students/studentsControlle
 module.exports = (app) => {
 
     app.get('/api/students/getUserData/:id_user', middleware, StudentsController.getStudentData);
+    app.get('/api/students/getActiveEnroll/:id_student', middleware, StudentsController.getActiveEnroll);
 
     app.delete('/api/students/toBe/cancelRegister/:user_id', middleware, StudentsController.cancelStudentToBeRegister);
 

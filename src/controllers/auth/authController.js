@@ -82,6 +82,23 @@ module.exports = {
                 error: error
             })
         }
+    },
+
+    async getLogout(req, res, next){
+        try {
+            await AuthModel.logoutByUserId(req.params.userId);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Cierre de sesion exitosa'
+            });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al cerrar la sesion del usuario',
+                error: error
+            });
+        }
     }
 
 }

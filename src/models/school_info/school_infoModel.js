@@ -155,7 +155,7 @@ SchoolInfoModel.getGroups = async () => {
     const connection = await db.getConnection();
     return new Promise(async (resolve, reject) => {
         try {            
-            const [result] = await connection.query('SELECT * FROM grupos');
+            const [result] = await connection.query('SELECT * FROM grupos ORDER BY Indicador ASC');
             connection.release();
 
             resolve(result);
@@ -187,6 +187,30 @@ SchoolInfoModel.createGroup = async (indicador) => {
             connection.release();
             console.error(error.message);
             reject(error)
+        }
+    })
+}
+
+SchoolInfoModel.updateGroup = async (indicator, ID_Group) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            connection.beginTransaction();
+
+            const [result] = await connection.query(`UPDATE grupos SET Indicador = "${indicator}", Actualizado_EN = NOW() WHERE ID_Grupo = "${ID_Group}"`);
+
+            if(result.affectedRows > 0){
+                connection.commit();
+                connection.release();
+                resolve();
+            }else{
+                throw new Error('Ha ocurrido un error actualizando el grupo')
+            }
+        } catch (error) {
+            connection.rollback();
+            connection.release();
+            console.error(error.message);
+            reject(error);
         }
     })
 }

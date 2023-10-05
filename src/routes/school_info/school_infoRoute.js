@@ -14,6 +14,7 @@ module.exports = (app) => {
 
     app.get('/api/school/info/groups/getGroups', middleware, SchoolInfoController.getSchoolGroups);
     app.post('/api/school/info/groups/createGroup', middleware, SchoolInfoController.createSchoolGroup);
+    app.put('/api/school/info/groups/updateGroup', middleware, SchoolInfoController.updateSchoolGroup);
 
 
 }

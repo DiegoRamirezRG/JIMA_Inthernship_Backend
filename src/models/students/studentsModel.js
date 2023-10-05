@@ -183,4 +183,21 @@ StudentModel.deleteAspiranteRegister = async(student_id) => {
     })
 }
 
+StudentModel.getActiveEnrolled = async(student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            
+            const [result] = await connection.query(`SELECT c.Nombre, gra.Numero as Grado, gru.Indicador as Grupo, tur.Nombre as Turno, ins.Active, ins.Pagado FROM inscripciones AS ins JOIN carrera AS c ON c.ID_Carrera = ins.FK_Carrera JOIN grados AS gra ON gra.ID_Grado = ins.FK_Grado JOIN grupos AS gru ON gru.ID_Grupo = ins.FK_Grupo JOIN turnos AS tur ON tur.ID_Turno = ins.FK_Turno JOIN calendario AS cal ON ins.Creado_En BETWEEN cal.Inicio AND cal.Fin WHERE ins.FK_Estudiante = "${student_id}" ORDER BY ins.Creado_En DESC LIMIT 1`);
+            connection.release();
+            resolve(result[0]);
+
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
 module.exports = StudentModel;

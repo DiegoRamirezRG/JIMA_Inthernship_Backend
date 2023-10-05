@@ -220,3 +220,27 @@ CREATE TABLE inscripciones(
     FOREIGN KEY (FK_Grupo) REFERENCES grupos(ID_Grupo) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (FK_Turno) REFERENCES turnos(ID_Turno) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+--Calendario
+CREATE TABLE calendario(
+    ID_Calendario CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Nombre VARCHAR(50) NOT NULL,
+    Inicio DATETIME NOT NULL,
+    Fin DATETIME NOT NULL,
+    Active BOOLEAN DEFAULT(1),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL
+);
+
+CREATE TABLE calendario_eventos(
+    ID_Calendario_Eventos CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Titulo VARCHAR(50) NOT NULL,
+    Descripcion TEXT NULL,
+    Fecha_Inicio DATETIME NOT NULL,
+    Fecha_Fin DATETIME NULL,
+    Color VARCHAR(8) NOT NULL,
+    FK_Calendario CHAR(36) NOT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Calendario) REFERENCES calendario(ID_Calendario) ON UPDATE CASCADE ON DELETE CASCADE
+);

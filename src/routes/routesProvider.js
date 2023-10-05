@@ -9,7 +9,7 @@ const LocationRoutes = require('./location/locationRoute');
 const StadisticsRoutes = require('./stadistics/stadisticsRoute');
 const CareerRoutes = require('./careers/careersRoute');
 const SchoolInfoRoutes = require('./school_info/school_infoRoute');
-
+const CalendarRoutes = require('./calendar/calendarRoute');
 const StudentRoutes = require('./students/studentsRoute');
 
 module.exports = (app) => {
@@ -25,4 +25,5 @@ module.exports = (app) => {
     CareerRoutes(app);
     StudentRoutes(app);
     SchoolInfoRoutes(app);
+    CalendarRoutes(app);
 }

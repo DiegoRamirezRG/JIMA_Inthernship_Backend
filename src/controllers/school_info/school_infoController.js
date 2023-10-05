@@ -175,4 +175,27 @@ module.exports = {
             });
         }
     },
+
+    async updateSchoolGroup(req, res, next){
+        try {
+            const { ID_Grupo, Indicador } = req.body;
+
+            if(!ID_Grupo || !Indicador){
+                throw new Error('Datos faltantes');
+            }
+
+            await SchoolInfoModel.updateGroup(Indicador, ID_Grupo);
+            return res.status(201).json({
+                success: true,
+                message: 'Grupo actualizado con exito',
+            });
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al actualizar el grupo',
+                error: error.message
+            });
+        }
+    }
 }

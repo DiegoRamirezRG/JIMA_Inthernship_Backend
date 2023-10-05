@@ -121,6 +121,33 @@ module.exports = {
                 error: error.message
             });
         }
+    },
+
+    async getActiveEnroll(req, res, next){
+        try {
+            
+            const { id_student } = req.params;
+
+            if(!id_student){
+                throw new Error('Datos faltantes');
+            }
+
+            await StudentModel.verifyIsStudent(id_student);
+            const enrolled = await StudentModel.getActiveEnrolled(id_student);
+            
+            return res.status(201).json({
+                success: true,
+                message: 'Ultimo ciclo inscrito obtenido con exito',
+                data: enrolled
+            })
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al cancelar el registro del Aspirante',
+                error: error.message
+            });
+        }
     }
 
 }
