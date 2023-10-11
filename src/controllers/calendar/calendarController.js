@@ -103,21 +103,43 @@ module.exports = {
                 throw new Error('Datos faltantes');
             }
 
-            await CalendarModel.createCalendarEvent(Titulo, Descripcion, Fecha_Inicio, Fecha_Fin, Color, ID_Calendario);
+            const newId = await CalendarModel.createCalendarEvent(Titulo, Descripcion, Fecha_Inicio, Fecha_Fin, Color, ID_Calendario);
             return res.status(201).json({
                 success: true,
                 message: 'Evento creado con exito',
+                data: newId
             });
 
         } catch (error) {
             return res.status(501).json({
                 success: false,
                 message: 'Ha ocurrido un error al crear los Eventos del Calendario',
-                error: error.message
+                error: error.message || error
+            });
+        }
+    },
+
+    async updateAnActiveEvent(req, res, next){
+        try {
+            const { ID_Calendario_Eventos, Titulo, Descripcion, Fecha_Inicio, Fecha_Fin, Color } = req.body;
+
+            if(!ID_Calendario_Eventos || !Titulo || !Fecha_Inicio || !Color){
+                throw new Error('Datos faltantes');
+            }
+
+            await CalendarModel.updateAnEvent(ID_Calendario_Eventos, Titulo, Descripcion, Fecha_Inicio, Fecha_Fin, Color);
+            return res.status(201).json({
+                success: true,
+                message: 'Evento actualizado con exito',
+            })
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al crear los Eventos del Calendario',
+                error: error.message || error
             });
         }
     }
-
 }
 
 

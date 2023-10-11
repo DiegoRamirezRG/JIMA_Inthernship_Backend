@@ -98,12 +98,39 @@ CalendarModel.createCalendarEvent = async (Titulo, Descripcion, Fecha_Inicio, Fe
 
             const [result] = await connection.query(`INSERT INTO calendario_eventos (Titulo, Descripcion, Fecha_Inicio, Fecha_Fin, Color, FK_Calendario) VALUES("${Titulo}", ${Descripcion ? `"${Descripcion}"` : null}, "${Fecha_Inicio}", ${Fecha_Fin ? `"${Fecha_Fin}"` : null}, "${Color}", "${ID_Calendario}")`);
             if(result.affectedRows > 0){
+
+                const [id] =  await connection.query(`SELECT ID_Calendario_Eventos FROM calendario_eventos WHERE Titulo = "${Titulo}" AND Fecha_Inicio = "${Fecha_Inicio}"`);
+
                 connection.commit();
                 connection.release();
-                resolve();
+                resolve(id[0].ID_Calendario_Eventos);
             }else{
                 throw new Error('Error al crear el evento');
             }
+        } catch (error) {
+            connection.rollback();
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+CalendarModel.updateAnEvent = async (id_cal_event, titulo, desc, fecha_init, fecha_end, color) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            connection.beginTransaction();
+
+            const [result] = await connection.query(`UPDATE calendario_eventos set Titulo = "${titulo}", Descripcion = ${desc != '' ? `"${desc}"` : null}, Fecha_Inicio = "${fecha_init}", Fecha_Fin = ${fecha_end ? `"${fecha_end}"` : null}, Color = "${color}", Actualizado_EN = NOW() WHERE ID_Calendario_Eventos = "${id_cal_event}"`);
+            if(result.affectedRows > 0){
+                connection.commit();
+                connection.release();
+                resolve('updated');
+            }else{
+                throw new Error('Error al actualizar el evento');
+            }
+    
         } catch (error) {
             connection.rollback();
             connection.release();
