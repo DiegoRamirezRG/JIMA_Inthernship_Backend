@@ -10,5 +10,4 @@ module.exports = (app) => {
     app.get('/api/calendar/getActiveEvents', middleware, CalendarController.getCalendarEvents);
 
     app.put('/api/calendar/updateEvent', middleware, CalendarController.updateAnActiveEvent);
-
 }

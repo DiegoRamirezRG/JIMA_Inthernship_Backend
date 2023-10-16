@@ -20,7 +20,7 @@ module.exports = {
             }
 
             const availableCreate = await CalendarModel.isCalendarActiveAndAvailable();
-            if(availableCreate){
+            if(availableCreate == true){
                 throw new Error('Ya existe un Calendario activo');
             }
 
@@ -31,6 +31,7 @@ module.exports = {
                 message: 'Calendario creado con exito'
             });
         } catch (error) {
+            console.log(error);
             return res.status(501).json({
                 success: false,
                 message: 'Ha ocurrido un error al crear el Calendario',
@@ -42,7 +43,7 @@ module.exports = {
     async getActiveCalendar(req, res, next){
         try {
             const calendar = await CalendarModel.isCalendarActiveAndAvailable();
-            if(!calendar){
+            if(calendar == false){
                 return res.status(201).json({
                     success: true,
                     message: 'No existe ningun calendario Activo',
