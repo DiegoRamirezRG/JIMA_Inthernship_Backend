@@ -3,6 +3,5 @@ const SchoolarCycleController = require('../../controllers/schoolar_cycle/School
 
 module.exports = (app) => {
 
-    app.get('/api/cycle/getBasicDates', middleware, SchoolarCycleController.getBasicInitialDates);
-
+    app.get('/api/cycle/getCycleStatus', middleware, SchoolarCycleController.getBasicInitialDates);
 }
