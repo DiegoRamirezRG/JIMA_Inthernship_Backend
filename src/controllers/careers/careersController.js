@@ -99,5 +99,24 @@ module.exports = {
                 error: error.message
             })
         }
+    },
+
+    async getCareerById(req, res, next){
+        try {
+            const careerId = req.params.id_career;
+            const careerInfo = await CareerModel.getCareerById(careerId);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Carrera obtenida con exito',
+                data: careerInfo
+            })
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener la Carrera',
+                error: error.message
+            })
+        }
     }
 }

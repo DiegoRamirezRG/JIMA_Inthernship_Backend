@@ -5,6 +5,7 @@ module.exports = (app) => {
 
     app.get('/api/careers/getAllCareers', middleware, CareersController.getCareers);
     app.get('/api/careers/getAllCareers/Actives', middleware, CareersController.getCareersActve);
+    app.get('/api/careers/getCareer/:id_career', middleware, CareersController.getCareerById);
 
     app.post('/api/careers/createCareer', middleware, CareersController.createCareer);
 

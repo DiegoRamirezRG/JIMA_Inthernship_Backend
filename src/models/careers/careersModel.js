@@ -76,5 +76,19 @@ CareerModel.updateCareer = async (ID_Carrera, Nombre, Numero_De_Ciclos, Duracion
     })
 }
 
+CareerModel.getCareerById = async (careerId) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT * FROM carrera WHERE ID_Carrera = "${careerId}"`);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
 
 module.exports = CareerModel;

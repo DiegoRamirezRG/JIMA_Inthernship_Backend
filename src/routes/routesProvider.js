@@ -12,6 +12,8 @@ const SchoolInfoRoutes = require('./school_info/school_infoRoute');
 const CalendarRoutes = require('./calendar/calendarRoute');
 const StudentRoutes = require('./students/studentsRoute');
 const SchoolarCycleRoutes = require('./schoolar_cycle/SchoolarCycleRoute');
+const CareerPlansRoutes = require('./career_plans/careerPlansRoute');
+const SubjectRoutes = require('./subjects/SubjectsRoute');
 
 module.exports = (app) => {
 
@@ -28,4 +30,6 @@ module.exports = (app) => {
     SchoolInfoRoutes(app);
     CalendarRoutes(app);
     SchoolarCycleRoutes(app);
+    CareerPlansRoutes(app);
+    SubjectRoutes(app);
 }
