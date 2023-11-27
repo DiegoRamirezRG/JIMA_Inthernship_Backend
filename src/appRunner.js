@@ -18,6 +18,7 @@ app.use(cors({
 app.disable('x-powered-by');
 
 app.use('/images/user_profiles', express.static(path.join(__dirname, 'global/storage/user_profiles')));
+app.use('/images/user_wallpaper', express.static(path.join(__dirname, 'global/storage/user_wallpapers')));
 
 RoutesProv(app);
 

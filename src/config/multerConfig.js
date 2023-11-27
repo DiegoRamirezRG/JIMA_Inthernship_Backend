@@ -109,8 +109,44 @@ const student_asigmnet_bucket = async (assign_id, student_id) => {
     })
 }
 
+const wallpaper_files = '/global/storage/user_wallpapers/';
+
+const user_wallpaper_bucket = async (id) => {
+    return new Promise((resolve, reject) => {
+        if(!fs.existsSync(rootDirectory+wallpaper_files+id)){
+            fs.mkdir(rootDirectory+wallpaper_files+id, { recursive: true }, (err) => {
+                if(err){
+                    console.error(`Error creating directory: ${rootDirectory+assigment_files+assign_id+'/turned/'+student_id}. Error: ${err}`);
+                    reject(err);
+                }else{
+                    const storage = multer.diskStorage({
+                        destination: function(req, file, cb){
+                            cb(null, rootDirectory+wallpaper_files+id);
+                        },
+                        filename: function(req, file, cb){
+                            cb(null, 'wallpaper_profile.jpg');
+                        }
+                    });
+                    resolve(storage)
+                }
+            })
+        }else{
+            const storage = multer.diskStorage({
+                destination: function(req, file, cb){
+                    cb(null, rootDirectory+wallpaper_files+id);
+                },
+                filename: function(req, file, cb){
+                    cb(null, 'wallpaper_profile.jpg');
+                }
+            });
+            resolve(storage);
+        }
+    })
+}
+
 module.exports = {
     user_profile_bucket,
+    user_wallpaper_bucket,
     assigment_files_bucket,
     student_asigmnet_bucket
 }
