@@ -26,6 +26,27 @@ module.exports = {
                 error: error.message || error
             })
         }
+    },
+
+    async createNewCycleGroup(req, res, next){
+        try {
+            
+            const { careerId, students, shifts } = req.body;
+
+            await SchoolarCycleModel.createInscriptionGroup(careerId, students, shifts);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Grupos creados con exito'
+            });
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al crear grupos',
+                error: error.message || error
+            })
+        }
     }
 
 }

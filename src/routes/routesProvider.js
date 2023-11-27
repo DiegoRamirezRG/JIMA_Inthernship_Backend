@@ -14,6 +14,11 @@ const StudentRoutes = require('./students/studentsRoute');
 const SchoolarCycleRoutes = require('./schoolar_cycle/SchoolarCycleRoute');
 const CareerPlansRoutes = require('./career_plans/careerPlansRoute');
 const SubjectRoutes = require('./subjects/SubjectsRoute');
+const ScheduleRoutes = require('./schedules/schedulesRoute');
+const TeachersRoutes = require('./teachers/teachersRoute');
+const GroupsRoutes = require('./groups/groupsRoute');
+const HomeworkRoutes = require('./homeworks/homeworksRoute');
+const FileManagmentRoutes = require('./fileManagment/fileManagmentRoute');
 
 module.exports = (app) => {
 
@@ -32,4 +37,9 @@ module.exports = (app) => {
     SchoolarCycleRoutes(app);
     CareerPlansRoutes(app);
     SubjectRoutes(app);
+    ScheduleRoutes(app);
+    TeachersRoutes(app);
+    GroupsRoutes(app);
+    HomeworkRoutes(app);
+    FileManagmentRoutes(app);
 }

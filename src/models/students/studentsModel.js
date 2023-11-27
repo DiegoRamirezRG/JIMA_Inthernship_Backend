@@ -200,4 +200,94 @@ StudentModel.getActiveEnrolled = async(student_id) => {
     })
 }
 
+StudentModel.getLastCycleStudents = async() => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            
+            //Modificar consulta alo mejor
+            const [result] = await connection.query('SELECT * FROM inscripciones AS i, estudiante AS e, persona AS p, carrera AS c, grados AS gra, grupos AS gru, turnos AS t WHERE i.FK_Estudiante = e.ID_Estudiante AND e.ID_Estudiante = p.ID_Persona AND i.FK_Carrera = c.ID_Carrera AND i.FK_Grado = gra.ID_Grado AND i.FK_Grupo = gru.ID_Grupo AND i.FK_Turno = t.ID_Turno AND i.Active = TRUE ORDER BY FK_Turno, FK_Carrera, FK_Grado, FK_Grupo');
+            connection.release();
+            resolve(result);
+
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getStudentsToBe = async () => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            
+            const [result] = await connection.query('SELECT ap.ID_Aspirante, e.ID_Estudiante, c.ID_Carrera, p.* FROM aspirante_helper as ap, estudiante as e, carrera as c, persona as p WHERE ap.FK_Estudiante = e.ID_Estudiante AND e.FK_Persona = p.ID_Persona AND ap.FK_Carrera = c.ID_Carrera ORDER BY c.ID_Carrera');
+            connection.release();
+            resolve(result);
+
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getClassesById = async (person_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT c.* FROM estudiante_clases AS ec JOIN estudiante AS e ON e.ID_Estudiante = ec.FK_Estudiante JOIN persona AS p ON p.ID_Persona = e.FK_Persona JOIN clase AS c ON ec.FK_Clase = c.ID_Clase JOIN materia AS m ON c.FK_Materia = m.ID_Materia WHERE p.ID_Persona = "${person_id}"`);
+            connection.release();
+            resolve(result);
+
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getStudentIdByPersonId = async(person_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async( resolve, reject ) => {
+        try {
+            const [result] = await connection.query(`SELECT ID_Estudiante FROM estudiante WHERE FK_Persona = "${person_id}"`);
+            connection.release();
+            resolve(result[0].ID_Estudiante);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getTodoAssigmentes = async (student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT DISTINCT a.*, m.Nombre, c.FK_Profesor
+            FROM estudiante_clases ec
+            JOIN clase c ON ec.FK_Clase = c.ID_Clase
+            JOIN actividad a ON c.ID_Clase = a.FK_Clase
+            JOIN materia m ON c.FK_Materia = m.ID_Materia
+            LEFT JOIN entregas e ON a.ID_Actividad = e.FK_Actividad AND e.FK_Estudiante = ec.FK_Estudiante
+            WHERE ec.FK_Estudiante = "${student_id}"
+            AND (e.ID_Entregas IS NULL AND (a.Fecha_De_Entrega >= CURDATE() OR a.Fecha_De_Entrega IS NULL OR a.Acepta_Despues = 1));`);
+
+
+            connection.release()
+            resolve(result);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
 module.exports = StudentModel;

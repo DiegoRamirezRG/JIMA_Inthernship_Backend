@@ -5,7 +5,7 @@ USE jima_internship;
 -- User Information
 
 CREATE TABLE persona(
-    ID_Persona CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Creado_Por CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
     Apellido_Paterno VARCHAR(50) NOT NULL,
     Apellido_Materno VARCHAR(50) NULL,
@@ -243,4 +243,118 @@ CREATE TABLE calendario_eventos(
     Creado_En DATETIME NOT NULL DEFAULT NOW(),
     Actualizado_EN DATETIME NULL,
     FOREIGN KEY(FK_Calendario) REFERENCES calendario(ID_Calendario) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE handler_ciclo_escolar(
+    ID_Handler_Ciclo_Escolar CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Calendario CHAR(36) NOT NULL,
+    Ciclo_Iniciado BOOLEAN DEFAULT(0),
+    Ciclo_Conf_Term BOOLEAN DEFAULT(0),
+    FOREIGN KEY(FK_Calendario) REFERENCES calendario(ID_Calendario) ON UPDATE CASCADE ON DELETE CASCADE
+)
+
+--Profesor, Alumno, Clase
+CREATE TABLE clase(
+    ID_Clase CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Materia CHAR(36) NOT NULL,
+    FK_Profesor CHAR(36) NOT NULL,
+    Active BOOLEAN DEFAULT(1),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Materia) REFERENCES materia(ID_Materia) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Profesor) REFERENCES profesor(ID_Profesor) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE table estudiante_clases(
+    ID_Estudiante_Clases CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Estudiante CHAR(36) NOT NULL,
+    FK_Clase CHAR(36) NOT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Estudiante) REFERENCES estudiante(ID_Estudiante) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE horario(
+    ID_Horario CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Dia ENUM('Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado') NOT NULL,
+    Hora_Inicio TIME NOT NULL,
+    Hora_Fin TIME NOT NULL,
+    FK_Clase CHAR(36) NOT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+--Asignaciones
+CREATE TABLE rubrica(
+    ID_Rubrica CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Active BOOLEAN DEFAULT(1),
+    Creado_Por CHAR(36) NOT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(Creado_Por) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE detalle_rubrica(
+    ID_Detalle_Rubrica CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Rubrica CHAR(36) NOT NULL,
+    Nombre VARCHAR(30) NOT NULL,
+    Descripcion TEXT NULL,
+    Valor INT NOT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Rubrica) REFERENCES rubrica(ID_Rubrica) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE unidad(
+    ID_Unidad CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Clase CHAR(36) NOT NULL,
+    Nombre VARCHAR(100),
+    FK_Rubrica CHAR(36) NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Rubrica) REFERENCES rubrica(ID_Rubrica) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE actividad(
+    ID_Actividad CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Titulo VARCHAR(100) NOT NULL,
+    Descripcion TEXT NULL,
+    Fecha_De_Entrega DATETIME NULL,
+    FK_Clase CHAR(36) NOT NULL,
+    FK_Rubrica CHAR(36) NULL,
+    Fk_Unidad CHAR(36) NULL,
+    Active BOOLEAN DEFAULT(1),
+    Alumnos_Actividad JSON NULL,
+    Requiere_Anexos BOOLEAN DEFAULT(0),
+    Acepta_Despues BOOLEAN DEFAULT(0),
+    Calificable BOOLEAN DEFAULT(0),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Rubrica) REFERENCES rubrica(ID_Rubrica) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(Fk_Unidad) REFERENCES unidad(ID_Unidad) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE actividad_anexos(
+    ID_Actividad_Anexo CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Actividad CHAR(36) NOT NULL,
+    Nombre_Del_Archivo TEXT NOT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Actividad) REFERENCES actividad(ID_Actividad) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE entregas(
+    ID_Entregas CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Actividad CHAR(36) NOT NULL,
+    FK_Estudiante CHAR(36) NOT NULL,
+    Anexos JSON NULL,
+    Calificacion INT NULL,
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Actividad) REFERENCES actividad(ID_Actividad) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Estudiante) REFERENCES estudiante(ID_Estudiante) ON UPDATE CASCADE ON DELETE CASCADE
 );

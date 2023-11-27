@@ -70,16 +70,20 @@ UsersModel.createUser = async (user, address, alergies, type) => {
                 case 'Administrativo':
                     const insertAdminQuery = `INSERT INTO administrativos (FK_Persona,${type.Codigo_De_Administrativo.length > 0 ? ' Codigo_De_Administrativo, ' : ' '}NSS, Fecha_De_Contratacion, URL) VALUES ("${userInserted[0].ID_Persona}" ,${type.Codigo_De_Administrativo.length > 0 ? ` "${type.Codigo_De_Administrativo}", ` : " "}"${type.NSS}", "${type.Fecha_De_Contratacion}", "${type.URL.length > 0 ? type.URL : null}")`;
                     await connection.query(insertAdminQuery);
+                    await connection.query(`UPDATE persona SET Active = TRUE WHERE ID_Persona = "${userInserted[0].ID_Persona}"`);
                     break;
                 case 'Profesor':
                     const insertTeacherQuery = `INSERT INTO profesor (FK_Persona,${type.Codigo_De_Profesor.length > 0 ? ' Codigo_De_Profesor, ' : ' '}NSS, Fecha_De_Contratacion, URL) VALUES ("${userInserted[0].ID_Persona}",${type.Codigo_De_Profesor.length > 0 ? ` "${type.Codigo_De_Profesor.length}", ` : ' '}"${type.NSS}", "${type.Fecha_De_Contratacion}", "${type.URL.length > 0 ? type.URL : null}")`;
                     await connection.query(insertTeacherQuery);
+                    await connection.query(`UPDATE persona SET Active = TRUE WHERE ID_Persona = "${userInserted[0].ID_Persona}"`);
                     break;
                 case 'Estudiante':
                     const insertStudentQuery = `INSERT INTO estudiante (FK_Persona${type.Matricula ? ', Matricula': ''}${type.URL ? ', ULR': ''}) VALUES ("${userInserted[0].ID_Persona}"${type.Matricula ? `, "${type.Matricula}"`: ''}${type.URL ? `, "${type.URL}"`: ''})`;
                     await connection.query(insertStudentQuery);
                     break;
                 case 'Padre':
+                    //Hacer padre
+                    //await connection.query(`UPDATE persona SET Active = TRUE WHERE ID_Persona = "${userInserted[0].ID_Persona}"`);
                     break;
             }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "cluster" : "node clusterRunnner.js"
+    "cluster": "node clusterRunnner.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/DiegoRamirezRG/JIMA_Inthernship_Backend#readme",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "date-fns": "^2.30.0",

@@ -102,6 +102,22 @@ SchoolInfoModel.getGrades = async () => {
     })
 }
 
+SchoolInfoModel.createGradeIfNotExist = async (gradeNumber) => {
+    const connection = await db.getConnection();
+    return new Promise( async (resolve, reject) => {
+        try {
+            const newGradeId = await connection.query(`SELECT ObtenerIDGrado(${gradeNumber}) AS ID_Grado`);
+            connection.release();
+            if(newGradeId.length > 0){
+                resolve(newGradeId[0].ObtenerIDGrado);
+            }
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
 
 SchoolInfoModel.createGrade = async (name, desc) => {
     const connection = await db.getConnection();

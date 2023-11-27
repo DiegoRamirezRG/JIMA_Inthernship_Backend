@@ -148,6 +148,83 @@ module.exports = {
                 error: error.message
             });
         }
+    },
+
+    async getLastStudents(req, res, next){
+        try {
+            const students = await StudentModel.getLastCycleStudents();
+
+            return res.status(201).json({
+                success: true,
+                message: 'Estudiantes obtenidos con exito',
+                data: students
+            })
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener los estudiantes',
+                error: error.message
+            });
+        }
+    },
+
+    async getStudentsToBe(req, res, next){
+        try {
+            const studentsToBe = await StudentModel.getStudentsToBe();
+
+            return res.status(201).json({
+                success: true,
+                message: 'Aspirantes obtenidos con exito',
+                data: studentsToBe
+            })
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener los aspirantes',
+                error: error.message
+            });
+        }
+    },
+
+    async getStudentClassesById(req, res, next){
+        try {
+            
+            const classes = await StudentModel.getClassesById(req.params.person_id);
+            return res.status(201).json({
+                success: true,
+                message: 'Clases Obtenidas con exito',
+                data: classes
+            });
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener las clases',
+                error: error.message
+            });
+        }
+    },
+
+    async getStdudentToDoAssigments(req, res, next){
+        try {
+            const person_id = req.params.person_id;
+
+            const student_id = await StudentModel.getStudentIdByPersonId(person_id);
+            const todo = await StudentModel.getTodoAssigmentes(student_id);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Tareas pendientes obtenidas con exito',
+                data: todo
+            });
+
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener las tareas pendientes',
+                error: error.message
+            });
+        }
     }
 
 }
