@@ -93,7 +93,20 @@ AuthModel.getUserByJWT = async (token) => {
             data: authUser[0]
         }
     }
+}
 
+AuthModel.logoutByUserId = async (userId) => {
+    const connection = await db.getConnection();
+    return new Promise( async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`CALL CloseUserSession("${userId}")`);
+            resolve();
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
 }
 
 module.exports = AuthModel;

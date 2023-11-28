@@ -44,7 +44,6 @@ UsersHelpers.organizeWhere = (nombre, rol, grado, grupo, turno, id) => {
         organizedWhere += `ID_Persona <> "${id}" AND Nombre <> "Admin"`;
     }
 
-    console.log(organizedWhere);
     return organizedWhere;
 }
 

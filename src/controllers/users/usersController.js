@@ -3,7 +3,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const { user_profile_bucket } = require('../../config/multerConfig');
+const { user_profile_bucket, user_wallpaper_bucket } = require('../../config/multerConfig');
 
 const UsersModel = require('../../models/users/usersModel');
 const UsersHelpers = require('../../utils/usersHelpers/userHelpers');
@@ -176,6 +176,63 @@ module.exports = {
             return res.status(501).json({
                 success: false,
                 message: 'Hubo un error actualizando la informacion del usuario',
+                error: error.message
+            });
+        }
+    },
+
+    async uploadWallpaperImg(req, res, next){
+        try {
+            const id_user = req.params.user_id;
+            const deleteDir = path.join(__dirname, `../../global/storage/user_wallpapers/${id_user}`);
+            await UsersModel.verifyUserId(id_user); 
+            await UsersHelpers.deleteImage(deleteDir);
+
+            const bucket = multer({storage: await user_wallpaper_bucket(id_user)}).single('file');
+            await bucket(req, res, async(err) => {
+                if(err){
+                    console.error(`Error: ${err}`);
+                    return res.status(501).json({
+                        success: false,
+                        message: 'Hubo un error subiendo la imágene del perfil',
+                        error: err.message
+                    });
+                }
+
+                return res.status(201).json({
+                    success: true,
+                    message: 'Imágen del perfil subida correctamente',
+                    data: req.file.filename
+                });
+            })
+        } catch (error) {
+            console.log(error);
+            return res.status(501).json({
+                success: false,
+                message: 'Hubo un error subiendo la imágen de wallpaper',
+                error: error.message
+            });
+        }
+    },
+
+    async deleteWallpaperImg(req, res, next){
+        try {
+            const user_id = req.params.user_id;
+            await UsersModel.verifyUserId(user_id);
+
+            const deleteDir = path.join(__dirname, `../../global/storage/user_wallpapers/${user_id}`);
+            await UsersHelpers.deleteImage(deleteDir);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Imágen de wallpaper eliminada correctamente',
+            });
+
+        } catch (error) {
+            console.error(error)
+            return res.status(501).json({
+                success: false,
+                message: 'Hubo un error eliminando la imágen de wallpaper',
                 error: error.message
             });
         }
