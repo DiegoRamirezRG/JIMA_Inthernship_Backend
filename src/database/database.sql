@@ -358,3 +358,15 @@ CREATE TABLE entregas(
     FOREIGN KEY(FK_Actividad) REFERENCES actividad(ID_Actividad) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY(FK_Estudiante) REFERENCES estudiante(ID_Estudiante) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+CREATE TABLE asistencia(
+    ID_Asistencia CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Clase CHAR(36) NOT NULL,
+    FK_Estudiante CHAR(36) NOT NULL,
+    Fecha DATETIME NOT NULL DEFAULT NOW(),
+    Estado ENUM('Asistencia', 'Retraso', 'Justificacion', 'Falta'),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Estudiante) REFERENCES estudiante(ID_Estudiante) ON UPDATE CASCADE ON DELETE CASCADE
+);
