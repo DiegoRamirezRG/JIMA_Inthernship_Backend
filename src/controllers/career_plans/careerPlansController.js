@@ -102,5 +102,27 @@ module.exports = {
                 error: error.message || error
             })
         }
+    },
+
+    async getReinscriptionNextPlanSubjects(req, res, next){
+        try {
+            const { groups } = req.body;
+            console.log(groups);
+
+            const data = await CareerPlansModel.getNextSubjectsByGroup(groups);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Se han obtenido con exito las materias',
+                data: data
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener las materias del plan de estudio',
+                error: error.message || error
+            })
+        }
     }
 }

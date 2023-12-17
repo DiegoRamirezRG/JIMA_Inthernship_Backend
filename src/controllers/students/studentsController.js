@@ -225,6 +225,23 @@ module.exports = {
                 error: error.message
             });
         }
+    },
+
+    async getAllStudents(req, res, next){
+        try {
+            const data = await StudentModel.getAllStudents();
+            return res.status(201).json({
+                success: true,
+                message: 'Tareas pendientes obtenidas con exito',
+                data: data
+            });
+        } catch (error) {
+            return res.status(501).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener los estudiantes',
+                error: error.message
+            });
+        }
     }
 
 }

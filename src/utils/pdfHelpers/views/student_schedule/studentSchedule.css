@@ -1,0 +1,195 @@
+@font-face {
+    font-family: 'Quicksand';
+    src: url('../../assets/fonts/QuicksandRegular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('../../assets/fonts/QuicksandMedium.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Quicksand';
+    src: url('../../assets/fonts/QuicksandSemiBold.ttf') format('truetype');
+    font-weight: bolder;
+    font-style: normal;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+@page {
+    size: LETTER;
+    margin: 0;
+}
+
+@media print {
+    html, body {
+        width: 8.5in;
+        height: 11in;
+    }
+}
+
+.pdfContainer{
+    width: 8.5in;
+    height: 11in;
+    box-sizing: border-box;
+    padding: 27pt;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.pdfHeader{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+    width: 100%;
+}
+
+.pdfHeader img{
+    width: 60px;
+    height: 60px;
+}
+
+.pdfFormatInfo{
+    height: 60px !important;
+    font-family: 'Quicksand', sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.pdfFormatInfo p{
+    padding: 0px;
+    margin: 0px;
+    color: #6941C6;
+}
+
+.page-topic{
+    font-size: 35px !important;
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px;
+    line-height: 35px;
+}
+
+.page-cicle{
+    font-size: 20px !important;
+    padding: 0px;
+    margin: 0px;
+    line-height: 20px;
+}
+
+.school_info{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: 'Quicksand', sans-serif !important;
+}
+
+.school_name{
+    font-size: 25px
+}
+
+.school_address{
+    font-size: 18px;
+}
+
+.school_code{
+    font-size: 14px;
+}
+
+.user_info{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    gap: 10px;
+    font-family: 'Quicksand', sans-serif !important;
+    align-items: center;
+}
+
+.user_general_info{
+    width: calc(100% - 130px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 20px;
+}
+
+.user_info_row{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.user_info_row b{
+    color: #6941C6;
+}
+
+.user_image{
+    width: min-content;
+}
+
+.user_image img{
+    width: 110px;
+    border-radius: 50%;
+}
+
+.schedule_info{
+    min-height: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dynamicTableHeight{
+    height: min-content;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.table-fixed{
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-header-text{
+    font-family: 'Quicksand', sans-serif !important;
+    font-weight: bold;
+}
+
+.day_schedule{
+    font-size: 13px;
+}
+
+/* Aqui va el Table */
+
+.footer_info{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.footer_info img{
+    height: 30%;
+}

@@ -48,4 +48,34 @@ GradesModel.updateTurnedGrades = async (turneds) => {
     })
 }
 
+GradesModel.getKardexInfo = async (person_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL getKardex(?)', [ person_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
+GradesModel.getKardexGrades = async (class_id, student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL getGradesAvg(?, ?)', [ class_id, student_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
 module.exports = GradesModel;

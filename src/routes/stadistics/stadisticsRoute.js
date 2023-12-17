@@ -10,4 +10,6 @@ module.exports = (app) => {
     app.get('/api/stadistics/users/getTotalAdmins', middleware, StadisticsController.getTotalAdmins);
 
     app.get('/api/stadistics/gender/students', middleware, StadisticsController.getGenderStats);
+
+    app.get('/api/stadistics/cicle/students', middleware, StadisticsController.getStudentCicleStats);
 }

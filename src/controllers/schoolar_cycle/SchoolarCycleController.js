@@ -47,6 +47,18 @@ module.exports = {
                 error: error.message || error
             })
         }
+    },
+
+    async endTheSchoolarCycle(req, res, next){
+        try {
+            await SchoolarCycleModel.endTheCycle();
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al finalizar el ciclo escolar',
+                error: error.message || error
+            })
+        }
     }
 
 }

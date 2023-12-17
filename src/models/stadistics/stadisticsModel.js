@@ -101,4 +101,36 @@ StadisticsModel.getGenderStats = async () => {
     });
 }
 
+StadisticsModel.getStudentCicleStats = async () => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`WITH RankedInscripciones AS (
+                SELECT
+                    i.*,
+                ROW_NUMBER() OVER (PARTITION BY i.FK_Estudiante ORDER BY i.Creado_En DESC) AS rn
+                FROM
+                    inscripciones i
+            )
+            SELECT e.ID_Estudiante, p.ID_Persona, gra.Numero, gru.Indicador, tur.Nombre as Turno, car.Nombre as Carrera FROM estudiante e
+            JOIN persona as p ON e.FK_Persona = p.ID_Persona
+            JOIN RankedInscripciones ins ON e.ID_Estudiante = ins.FK_Estudiante AND ins.rn = 1
+            JOIN grados gra ON gra.ID_Grado = ins.FK_Grado
+            JOIN grupos gru ON gru.ID_Grupo = ins.FK_Grupo
+            JOIN turnos tur ON tur.ID_Turno = ins.FK_Turno
+            JOIN carrera car ON car.ID_Carrera = ins.FK_Carrera
+            WHERE p.Active = TRUE
+            AND e.Titulado = FALSE
+            AND ins.Active = TRUE`);
+
+            connection.release();
+            resolve(result);
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
 module.exports = StadisticsModel;
