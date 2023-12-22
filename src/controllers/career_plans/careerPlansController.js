@@ -48,6 +48,14 @@ module.exports = {
 
             const careerPlansComplet = {};
 
+            if(careersPlans.length <= 0){
+                return res.status(201).json({
+                    success: true,
+                    message: 'No existen planes en el sistema',
+                    data: []
+                })
+            }
+
             for (let i = 0; i < careers.length; i++) {
 
                 let sumaCreditos = 0;
