@@ -48,8 +48,8 @@ UsersModel.createUser = async (user, address, alergies, type) => {
 
         try {
             
-            const insertPersonaQuery = `INSERT INTO persona (Nombre, Apellido_Paterno,${user.Apellido_Materno.length > 0 ? ' Apellido_Materno, ' : ' '}${user.CURP.length > 0 ? 'CURP, ' : ''}Genero, Fecha_De_Nacimiento, Tipo_De_Sagre,${user.Numero_De_Emergencia.length > 0 ? ' Numero_De_Emergencia, ' : ' '}Numero_De_Telefono,${user.Nacionalidad.length > 0 ? ' Nacionalidad, ' : ' '}Correo_Electronico, Rol${user.Imagen.length > 0 ? ', Imagen' : ''}) `;
-            const insertPersonaValues = `VALUES ("${user.Nombre}", "${user.Apellido_Paterno}",${user.Apellido_Materno.length > 0 ? ` "${user.Apellido_Materno}", ` : ' '}${user.CURP.length > 0 ? `"${user.CURP}", ` : ''}"${user.Genero}", "${user.Fecha_De_Nacimiento}", "${user.Tipo_De_Sagre}",${user.Numero_De_Emergencia.length > 0 ? ` "${user.Numero_De_Emergencia}", ` : ' '}"${user.Numero_De_Telefono}",${user.Nacionalidad.length > 0 ? ` "${user.Nacionalidad}", ` : ' '}"${user.Correo_Electronico}", "${user.Rol}"${user.Imagen.length > 0 ? `, "${user.Imagen}"` : ''})`;
+            const insertPersonaQuery = `INSERT INTO persona (Active, Nombre, Apellido_Paterno,${user.Apellido_Materno.length > 0 ? ' Apellido_Materno, ' : ' '}${user.CURP.length > 0 ? 'CURP, ' : ''}Genero, Fecha_De_Nacimiento, Tipo_De_Sagre,${user.Numero_De_Emergencia.length > 0 ? ' Numero_De_Emergencia, ' : ' '}Numero_De_Telefono,${user.Nacionalidad.length > 0 ? ' Nacionalidad, ' : ' '}Correo_Electronico, Rol${user.Imagen.length > 0 ? ', Imagen' : ''})`;
+            const insertPersonaValues = `VALUES (false, "${user.Nombre}", "${user.Apellido_Paterno}",${user.Apellido_Materno.length > 0 ? ` "${user.Apellido_Materno}", ` : ' '}${user.CURP.length > 0 ? `"${user.CURP}", ` : ''}"${user.Genero}", "${user.Fecha_De_Nacimiento}", "${user.Tipo_De_Sagre}",${user.Numero_De_Emergencia.length > 0 ? ` "${user.Numero_De_Emergencia}", ` : ' '}"${user.Numero_De_Telefono}",${user.Nacionalidad.length > 0 ? ` "${user.Nacionalidad}", ` : ' '}"${user.Correo_Electronico}", "${user.Rol}"${user.Imagen.length > 0 ? `, "${user.Imagen}"` : ''})`;
             await connection.query(insertPersonaQuery+insertPersonaValues);
 
             const [userInserted] = await connection.query('SELECT ID_Persona FROM persona WHERE correo_electronico = "'+user.Correo_Electronico+'"');
@@ -70,16 +70,20 @@ UsersModel.createUser = async (user, address, alergies, type) => {
                 case 'Administrativo':
                     const insertAdminQuery = `INSERT INTO administrativos (FK_Persona,${type.Codigo_De_Administrativo.length > 0 ? ' Codigo_De_Administrativo, ' : ' '}NSS, Fecha_De_Contratacion, URL) VALUES ("${userInserted[0].ID_Persona}" ,${type.Codigo_De_Administrativo.length > 0 ? ` "${type.Codigo_De_Administrativo}", ` : " "}"${type.NSS}", "${type.Fecha_De_Contratacion}", "${type.URL.length > 0 ? type.URL : null}")`;
                     await connection.query(insertAdminQuery);
+                    await connection.query(`UPDATE persona SET Active = TRUE WHERE ID_Persona = "${userInserted[0].ID_Persona}"`);
                     break;
                 case 'Profesor':
                     const insertTeacherQuery = `INSERT INTO profesor (FK_Persona,${type.Codigo_De_Profesor.length > 0 ? ' Codigo_De_Profesor, ' : ' '}NSS, Fecha_De_Contratacion, URL) VALUES ("${userInserted[0].ID_Persona}",${type.Codigo_De_Profesor.length > 0 ? ` "${type.Codigo_De_Profesor.length}", ` : ' '}"${type.NSS}", "${type.Fecha_De_Contratacion}", "${type.URL.length > 0 ? type.URL : null}")`;
                     await connection.query(insertTeacherQuery);
+                    await connection.query(`UPDATE persona SET Active = TRUE WHERE ID_Persona = "${userInserted[0].ID_Persona}"`);
                     break;
                 case 'Estudiante':
                     const insertStudentQuery = `INSERT INTO estudiante (FK_Persona${type.Matricula ? ', Matricula': ''}${type.URL ? ', ULR': ''}) VALUES ("${userInserted[0].ID_Persona}"${type.Matricula ? `, "${type.Matricula}"`: ''}${type.URL ? `, "${type.URL}"`: ''})`;
                     await connection.query(insertStudentQuery);
                     break;
                 case 'Padre':
+                    //Hacer padre
+                    //await connection.query(`UPDATE persona SET Active = TRUE WHERE ID_Persona = "${userInserted[0].ID_Persona}"`);
                     break;
             }
 

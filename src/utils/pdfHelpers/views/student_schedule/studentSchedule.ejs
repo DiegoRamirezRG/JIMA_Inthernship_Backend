@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>horario_estudiante.pdf</title>
+</head>
+<body>
+    <div class="pdfContainer">
+        <div class="pdfHeader">
+            <img id="kyubiIsoLogo">
+            <div class="pdfFormatInfo">
+                <p class="m-0 p-0 page-topic">Horario Escolar</p>
+                <p class="m-0 p-0 page-cicle">Calendario <%= calendar_data.Nombre %></p>
+            </div>
+        </div>
+        <div class="school_info">
+            <p class="m-0 p-0 school_name">Tecnologico Superior de Jalisco, Campus Arandas</p>
+            <p class="m-0 p-0 school_address">José Guadalupe Tejeda Vázquez No. 557, Arandas, Jalisco</p>
+            <p class="m-0 p-0 school_code">CCT. 14EIT0003A </p>
+        </div>
+        <div class="user_info">
+            <div class="user_general_info">
+                <div class="user_info_row">
+                    <p class="m-0 p-0"><b>Alumno:</b> <%= person.Nombre %> <%= person.Apellido_Paterno %> <%= person.Apellido_Materno %></p>
+                    <p class="m-0 p-0"><b>Creditos:</b> <%= credits %></p>
+                </div>
+                <div class="user_info_row">
+                    <p class="m-0 p-0"><b>Codigo:</b> <%= student_id %></p>
+                </div>
+                <div class="user_info_row">
+                    <p class="m-0 p-0"><b>Carrera:</b> <%= enrolled_data.Carrera %></p>
+                    <p class="m-0 p-0"><b>Ciclo No:</b> <%= enrolled_data.Numero %></p>
+                </div>
+            </div>
+            <div class="user_image">
+                <img id="user_profile_img">
+            </div>
+        </div>
+        <div class="schedule_info">
+            <div class="dynamicTableHeight">
+                <table class="table table-striped table-fixed table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope="col table-header-text">Materia</th>
+                            <th scope="col table-header-text">Domingo</th>
+                            <th scope="col table-header-text">Lunes</th>
+                            <th scope="col table-header-text">Martes</th>
+                            <th scope="col table-header-text">Miercoles</th>
+                            <th scope="col table-header-text">Jueves</th>
+                            <th scope="col table-header-text">Viernes</th>
+                            <th scope="col table-header-text">Sabado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (const key in schedule_data) { %>
+                            <tr>
+                                <td class="subject_name text-start align-middle"><%= schedule_data[key].name %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Domingo %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Lunes %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Martes %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Miércoles %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Jueves %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Viernes %></td>
+                                <td class="day_schedule text-center align-middle"><%= schedule_data[key].Sábado %></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer_info">
+            <img id="kyubiLogo">
+        </div>
+    </div>
+</body>
+</html>

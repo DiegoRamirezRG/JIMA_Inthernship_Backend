@@ -1,5 +1,10 @@
 const { app } = require('./src/appRunner');
-const server = require('http').createServer(app);
+
+const serverOptions = {
+    maxHeaderSize: 80 * 1024,
+};
+
+const server = require('http').createServer(serverOptions, app);
 require('dotenv').config();
 
 server.listen(process.env.PORT, process.env.ADDR || 'localhost', () => {
