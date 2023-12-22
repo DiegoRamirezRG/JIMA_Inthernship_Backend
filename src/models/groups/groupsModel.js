@@ -46,4 +46,19 @@ GroupsModel.getAssistanceList = async(class_id) => {
     })
 }
 
+GroupsModel.getClassUnits = async (class_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL get_class_units(?)', [ class_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.log(error);
+            reject(error);
+        }
+    })
+}
+
 module.exports = GroupsModel;

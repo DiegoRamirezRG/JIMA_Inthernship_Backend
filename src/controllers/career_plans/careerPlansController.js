@@ -48,6 +48,14 @@ module.exports = {
 
             const careerPlansComplet = {};
 
+            if(careersPlans.length <= 0){
+                return res.status(201).json({
+                    success: true,
+                    message: 'No existen planes en el sistema',
+                    data: []
+                })
+            }
+
             for (let i = 0; i < careers.length; i++) {
 
                 let sumaCreditos = 0;
@@ -88,6 +96,28 @@ module.exports = {
             const cicle = req.params.cicle;
 
             const data = await CareerPlansModel.getSubjectsPerCicle(career, cicle);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Se han obtenido con exito las materias',
+                data: data
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener las materias del plan de estudio',
+                error: error.message || error
+            })
+        }
+    },
+
+    async getReinscriptionNextPlanSubjects(req, res, next){
+        try {
+            const { groups } = req.body;
+            console.log(groups);
+
+            const data = await CareerPlansModel.getNextSubjectsByGroup(groups);
 
             return res.status(201).json({
                 success: true,

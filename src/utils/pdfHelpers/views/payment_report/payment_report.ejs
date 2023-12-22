@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="pdfContainer">
+        <div class="pdfHeader">
+            <img id="kyubiIsoLogo">
+            <div class="pdfFormatInfo">
+                <p class="m-0 p-0 page-topic">Orden de Pago</p>
+                <p class="m-0 p-0 page-cicle">Tecnologico Superior de Jalisco, Campus Arandas</p>
+            </div>
+        </div>
+        <div class="user_info bg-danger">
+            <div class="user_general_info">
+                <div class="user_info_row">
+                    <p class="m-0 p-0"><b>Alumno:</b> <%= person.Nombre %> <%= person.Apellido_Paterno %> <%= person.Apellido_Materno %></p>
+                    <p class="m-0 p-0"><b>Folio:</b> <%= payment.Folio %></p>
+                </div>
+                <div class="user_info_row">
+                    <p class="m-0 p-0"><b>Codigo:</b>  <%= student_id %></p>
+                    <p class="m-0 p-0"><b>Fecha:</b> <%= date %></p>
+                </div>
+                <div class="user_info_row">
+                    <p class="m-0 p-0"><b>Calendario:</b> <%= calendar_data ? calendar_data.Nombre : 'N/A'%></p>
+                </div>
+            </div>
+        </div>
+        <div class="payment_container">
+            <table class="table table-striped table-bordered table-fixed table-responsive" id="kardex_table">
+                <thead>
+                    <tr>
+                        <th colspan ="1" col = "3" class="text-center align-middle">Concepto</th>
+                        <th colspan ="1" col = "6" class="text-center align-middle">Descripcion</th>
+                        <th colspan ="1" col = "3" class="text-center align-middle">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center align-middle"><%= payment.Concepto %></td>
+                        <td class="text-center align-middle"><%= payment.Descripcion %></td>
+                        <td class="text-center align-middle">$ <%= price %></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered table-fixed table-responsive" id="kardex_table">
+                <thead>
+                    <tr>
+                        <th colspan ="1" col = "3" class="text-center align-middle">Vigencia</th>
+                        <th colspan ="1" col = "6" class="text-center align-middle">Referencia</th>
+                        <th colspan ="1" col = "3" class="text-center align-middle">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center align-middle"><%= payment_limit %></td>
+                        <td class="text-center align-middle"><%= payment.Refenrencia_Bancaria ? payment.Refenrencia_Bancaria : 'Sin referencia bancaria' %></td>
+                        <td class="text-center align-middle">$ <%= price %></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <table class="table table-bordered table-fixed table-responsive" id="kardex_table">
+                    <thead>
+                        <tr>
+                            <th colspan ="1" col = "3" class="text-center align-middle">Sello escuela</th>
+                            <th colspan ="1" col = "9" class="text-center align-middle">Nombre y firma de recibido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="reciev_sign"></td>
+                            <td class="reciev_sign"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </table>
+        </div>
+        <div class="footer_info">
+            <img id="kyubiLogo">
+        </div>
+    </div>
+</body>
+</html>

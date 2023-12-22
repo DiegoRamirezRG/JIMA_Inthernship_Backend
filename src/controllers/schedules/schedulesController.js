@@ -80,6 +80,44 @@ module.exports = {
                 error: error
             })
         }
+    },
+
+    async getShiftData(req, res, next){
+        try {
+            const shift_id = req.params.shift_id;
+            const data = await SchedulesModel.getShiftData(shift_id);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Turno obtenido con exito',
+                data: data
+            })
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener el turno',
+                error: error
+            })
+        }
+    },
+
+    async createReinsSchedules(req, res, next){
+        try {
+            const { data } = req.body;
+            await SchedulesModel.createReinsSchedule(data);
+
+            return res.status(201).json({
+                success: true,
+                message: 'Horarios creados con exito',
+                data: 'Ciclo iniciado con exito'
+            })
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al crear los horarios para los grupos',
+                error: error
+            })
+        }
     }
 
 }

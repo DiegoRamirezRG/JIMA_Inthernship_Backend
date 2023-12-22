@@ -9,6 +9,7 @@ module.exports = (app) => {
     app.get('/api/students/toBe/getStudentsToBe', middleware, StudentsController.getStudentsToBe);
     app.get('/api/students/getClasses/:person_id', middleware, StudentsController.getStudentClassesById);
     app.get('/api/students/getToDoAssigns/:person_id', middleware, StudentsController.getStdudentToDoAssigments);
+    app.get('/api/students/getAllStudents', middleware, StudentsController.getAllStudents);
 
     app.delete('/api/students/toBe/cancelRegister/:user_id', middleware, StudentsController.cancelStudentToBeRegister);
 

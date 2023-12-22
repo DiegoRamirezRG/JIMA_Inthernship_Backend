@@ -5,7 +5,7 @@ USE jima_internship;
 -- User Information
 
 CREATE TABLE persona(
-    Creado_Por CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    ID_Persona CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
     Apellido_Paterno VARCHAR(50) NOT NULL,
     Apellido_Materno VARCHAR(50) NULL,
@@ -221,7 +221,7 @@ CREATE TABLE inscripciones(
     FOREIGN KEY (FK_Turno) REFERENCES turnos(ID_Turno) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---Calendario
+-- Calendario
 CREATE TABLE calendario(
     ID_Calendario CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     Nombre VARCHAR(50) NOT NULL,
@@ -251,9 +251,9 @@ CREATE TABLE handler_ciclo_escolar(
     Ciclo_Iniciado BOOLEAN DEFAULT(0),
     Ciclo_Conf_Term BOOLEAN DEFAULT(0),
     FOREIGN KEY(FK_Calendario) REFERENCES calendario(ID_Calendario) ON UPDATE CASCADE ON DELETE CASCADE
-)
+);
 
---Profesor, Alumno, Clase
+-- Profesor, Alumno, Clase
 CREATE TABLE clase(
     ID_Clase CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     FK_Materia CHAR(36) NOT NULL,
@@ -286,7 +286,7 @@ CREATE TABLE horario(
     FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---Asignaciones
+-- Asignaciones
 CREATE TABLE rubrica(
     ID_Rubrica CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
     Active BOOLEAN DEFAULT(1),
@@ -357,4 +357,41 @@ CREATE TABLE entregas(
     Actualizado_EN DATETIME NULL,
     FOREIGN KEY(FK_Actividad) REFERENCES actividad(ID_Actividad) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY(FK_Estudiante) REFERENCES estudiante(ID_Estudiante) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE asistencia(
+    ID_Asistencia CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Clase CHAR(36) NOT NULL,
+    FK_Estudiante CHAR(36) NOT NULL,
+    Fecha DATETIME NOT NULL DEFAULT NOW(),
+    Estado ENUM('Asistencia', 'Retraso', 'Justificacion', 'Falta'),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    FOREIGN KEY(FK_Clase) REFERENCES clase(ID_Clase) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Estudiante) REFERENCES estudiante(ID_Estudiante) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+-- Costes y pagos
+CREATE TABLE costes(
+    ID_Costo CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    Concepto VARCHAR(30),
+    Descripcion VARCHAR(100),
+    Coste DECIMAL(10, 2),
+    Vigencia INT NULL,
+    Refenrencia_Bancaria TEXT NULL,
+    Active BOOLEAN DEFAULT(1),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL
+);
+
+CREATE TABLE persona_coste(
+    ID_Persona_Coste CHAR(36) DEFAULT (UUID()) NOT NULL PRIMARY KEY,
+    FK_Persona CHAR(36) NOT NULL,
+    FK_Coste CHAR(36) NOT NULL,
+    Pagado BOOLEAN DEFAULT(0),
+    Creado_En DATETIME NOT NULL DEFAULT NOW(),
+    Actualizado_EN DATETIME NULL,
+    Folio INT NULL,
+    FOREIGN KEY(FK_Persona) REFERENCES persona(ID_Persona) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(FK_Coste) REFERENCES costes(ID_Costo) ON UPDATE CASCADE ON DELETE CASCADE
 );

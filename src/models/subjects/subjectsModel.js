@@ -89,6 +89,27 @@ SubjectModel.verifyArea = async (area_id) => {
             }
         } catch (error) {
             connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
+SubjectModel.getSubjectByClassId = async (class_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT m.* FROM 
+            materia AS m
+            JOIN clase as c ON c.FK_Materia = m.ID_Materia
+            WHERE c.ID_Clase = ?`,
+            [ class_id ]);
+
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error);
             reject(error);
         }
     })

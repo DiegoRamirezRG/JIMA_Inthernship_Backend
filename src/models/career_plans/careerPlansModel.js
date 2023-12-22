@@ -100,4 +100,59 @@ CareerPlansModel.getSubjectsPerCicle = async (career, cicle) => {
     })
 }
 
+CareerPlansModel.getCareerPlanCreditsByStudentId = async (student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT c.Nombre as nombre_carrera, SUM(m.Creditos) AS creditos_plan FROM inscripciones AS i
+            JOIN carrera AS c ON c.ID_Carrera = i.FK_Carrera
+            JOIN carrera_plan_academico AS cpa ON cpa.FK_Carrera = c.ID_Carrera
+            JOIN detalle_plan_academico AS dpa ON dpa.FK_Carrera_Plan_Academico = cpa.ID_Carrera_Plan_Academico
+            JOIN materia AS m ON m.ID_Materia = dpa.FK_Materia
+            WHERE i.FK_Estudiante = ?
+            AND cpa.Active = TRUE
+            GROUP BY c.Nombre`, [ student_id ]);
+
+            connection.release();
+            resolve(result[0])
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
+CareerPlansModel.getNextSubjectsByGroup = async (groups) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            let temp = [];
+
+            for (const element of groups) {
+                const inscripGroupDate = await connection.query('CALL getInscriptionDates(?)', [JSON.stringify(element.idsEstudiantes)]);
+                const nextSubjects = await connection.query('CALL getSubjectForReinscript(?, ?, ?)', [element.carrera, inscripGroupDate[0][0][0].inscription_date, element.nextGrade - 1]);
+
+                const tempObj = {
+                    id_carrera: element.carrera,
+                    id_grupo: element.grupo,
+                    id_turno: element.turno,
+                    next_grade: element.nextGrade,
+                    active_plan_before: inscripGroupDate[0][0][0].inscription_date,
+                    next_subjects: nextSubjects[0][0],
+                };
+                
+
+                temp.push(tempObj);
+            }
+
+            resolve(temp);
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
 module.exports = CareerPlansModel;

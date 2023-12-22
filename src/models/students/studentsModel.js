@@ -112,6 +112,14 @@ StudentModel.createCustomStudent = async (ID_Student, ID_Career, ID_Grado, ID_Gr
             console.log(`UPDATE persona SET Active = true WHERE ID_Persona = "${user_id}"`);
 
             if(result.affectedRows > 0 && updatePersona.affectedRows > 0){
+                await connection.query('CALL insert_custom_enrolled_classes(?, ?, ?, ?, ?)', [
+                    ID_Student,
+                    ID_Career,
+                    ID_Grado,
+                    ID_Grupo,
+                    ID_Turno
+                ]);
+
                 connection.commit();
                 connection.release();
                 resolve();
@@ -204,12 +212,54 @@ StudentModel.getLastCycleStudents = async() => {
     const connection = await db.getConnection();
     return new Promise(async(resolve, reject) => {
         try {
-            
-            //Modificar consulta alo mejor
-            const [result] = await connection.query('SELECT * FROM inscripciones AS i, estudiante AS e, persona AS p, carrera AS c, grados AS gra, grupos AS gru, turnos AS t WHERE i.FK_Estudiante = e.ID_Estudiante AND e.ID_Estudiante = p.ID_Persona AND i.FK_Carrera = c.ID_Carrera AND i.FK_Grado = gra.ID_Grado AND i.FK_Grupo = gru.ID_Grupo AND i.FK_Turno = t.ID_Turno AND i.Active = TRUE ORDER BY FK_Turno, FK_Carrera, FK_Grado, FK_Grupo');
+            const [result] = await connection.query(`WITH last_valid_inscriptions AS (
+                SELECT
+                    i.*,
+                    ROW_NUMBER() OVER (PARTITION BY i.FK_Estudiante ORDER BY i.Actualizado_EN DESC) AS RowNum
+                FROM
+                    inscripciones AS i
+                WHERE
+                    i.Active = FALSE
+            )
+            SELECT
+                i.ID_Inscripciones,
+                i.FK_Carrera,
+                i.FK_Grado,
+                i.FK_Grupo,
+                i.FK_Turno,
+                e.ID_Estudiante,
+                p.ID_Persona,
+                p.Nombre,
+                p.Apellido_Paterno,
+                p.Apellido_Materno,
+                c.ID_Carrera,
+                c.Nombre AS Carrera,
+                c.Numero_De_Ciclos,
+                c.Duracion_Mensual_De_Ciclos,
+                c.Descripcion,
+                gru.ID_Grupo,
+                gru.Indicador,
+                gra.ID_Grado,
+                gra.Numero,
+                t.ID_Turno,
+                t.Nombre as Turno
+            FROM last_valid_inscriptions AS i
+            JOIN estudiante AS e ON e.ID_Estudiante = i.FK_Estudiante
+            JOIN persona AS p ON p.ID_Persona = e.FK_Persona
+            JOIN carrera AS c ON i.FK_Carrera = c.ID_Carrera
+            JOIN grupos AS gru ON i.FK_Grupo = gru.ID_Grupo
+            JOIN grados AS gra ON i.FK_Grado = gra.ID_Grado
+            JOIN turnos AS t ON i.FK_Turno = t.ID_Turno
+            WHERE i.Active = FALSE
+            AND i.RowNum = 1
+            ORDER BY
+            FK_Turno,
+            FK_Carrera,
+            FK_Grado,
+            FK_Grupo`);
+
             connection.release();
             resolve(result);
-
         } catch (error) {
             connection.release();
             console.error(error.message);
@@ -285,6 +335,104 @@ StudentModel.getTodoAssigmentes = async (student_id) => {
         } catch (error) {
             connection.release();
             console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getEnrolledStudentInformation = async (student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT gra.Numero, gru.Indicador, tur.Nombre, tur.Hora_Inicio, tur.Hora_Fin, car.Nombre as Carrera, car.Numero_De_Ciclos FROM 
+            inscripciones AS i 
+            JOIN grados AS gra ON i.FK_Grado = gra.ID_Grado
+            JOIN carrera AS car ON i.FK_Carrera = car.ID_Carrera
+            JOIN grupos AS gru ON i.FK_Grupo = gru.ID_Grupo
+            JOIN turnos AS tur ON i.FK_Turno = tur.ID_Turno
+            WHERE i.FK_Estudiante = ?
+            ORDER BY i.Creado_EN DESC LIMIT 1`, [ student_id ]);
+            
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getCurrentClasses = async (student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL getStudentActiveClasses(?)', [ student_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getAllClasses = async (student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL getStudentAllClasses(?)', [ student_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getExtraGeade = async (class_id, student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL get_unit_avg_no_unit(?, ?)', [ class_id, student_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getUnitAvg = async (class_id, unit_id, student_id) => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            const [result] = await connection.query('CALL get_unit_avg(?, ?, ?)', [ class_id, unit_id, student_id ]);
+            connection.release();
+            resolve(result[0]);
+        } catch (error) {
+            connection.release();
+            console.error(error.message);
+            reject(error);
+        }
+    })
+}
+
+StudentModel.getAllStudents = async () => {
+    const connection = await db.getConnection();
+    return new Promise(async (resolve, reject) => {
+        try {
+            const [result] = await connection.query(`SELECT e.ID_Estudiante, p.ID_Persona, CONCAT(p.Nombre, ' ', p.Apellido_Paterno, ' ',p.Apellido_Materno) as Nombre_Estudiante, p.Active, p.Imagen  FROM estudiante e JOIN persona p ON p.ID_Persona = e.FK_Persona`);
+            connection.release();
+            resolve(result);
+        } catch (error) {
+            connection.release();
+            console.error(error);
             reject(error);
         }
     })

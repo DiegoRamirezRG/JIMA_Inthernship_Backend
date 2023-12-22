@@ -104,4 +104,21 @@ module.exports = {
         }
     },
 
+    async getStudentCicleStats(req, res, next){
+        try {
+            const data = await StadisticsModel.getStudentCicleStats();
+            return res.status(201).json({
+                success: true,
+                message: 'Estadisticas obtenidas con exito',
+                data: data
+            });
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: 'Ha ocurrido un error al obtener las estadisticas de estudiantes',
+                error: error.message
+            })
+        }
+    }
+
 }

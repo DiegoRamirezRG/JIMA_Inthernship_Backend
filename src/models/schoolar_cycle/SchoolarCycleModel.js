@@ -84,4 +84,23 @@ SchoolarCycleModel.initCicleUpdateCalendar = async (calendar_id) => {
     })
 }
 
+SchoolarCycleModel.endTheCycle = async () => {
+    const connection = await db.getConnection();
+    return new Promise(async(resolve, reject) => {
+        try {
+            const [result] = await connection.query(`CALL finish_schoolar_cicle()`);
+            if(result.affectedRows > 0){
+                connection.release();
+                resolve();
+            }else{
+                throw new Error('Ha ocurrido un error al iniciar el ciclo');
+            }
+        } catch (error) {
+            connection.release();
+            console.error(error);
+            reject(error);
+        }
+    })
+}
+
 module.exports = SchoolarCycleModel;
